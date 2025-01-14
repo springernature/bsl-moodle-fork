@@ -2137,12 +2137,17 @@ function feedback_update_values() {
  * @param int $groupid
  * @param int $courseid
  * @param bool $ignore_empty if this is set true so empty values are not delivered
+ * @param $filteringdata
  * @return array the value-records
  */
+// START BSL TWEAK - Handle additional analysis parameters
+// Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
 function feedback_get_group_values($item,
                                    $groupid = false,
                                    $courseid = false,
-                                   $ignore_empty = false) {
+                                   $ignore_empty = false,
+                                   $filteringdata = false) {
+    // END BSL TWEAK.
 
     global $CFG, $DB;
 
@@ -2157,7 +2162,9 @@ function feedback_get_group_values($item,
             $ignore_empty_select = "";
         }
 
-        $query = 'SELECT fbv .  *
+        // START BSL TWEAK - Provide additional analysis parameters
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        $query = 'SELECT fbv .  *, fbc.timemodified
                     FROM {feedback_value} fbv, {feedback_completed} fbc, {groups_members} gm
                    WHERE fbv.item = :itemid
                          AND fbv.completed = fbc.id
@@ -2165,6 +2172,7 @@ function feedback_get_group_values($item,
                          '.$ignore_empty_select.'
                          AND gm.groupid = :groupid
                 ORDER BY fbc.timemodified';
+        // END BSL TWEAK.
         $params += array('itemid' => $item->id, 'groupid' => $groupid);
         $values = $DB->get_records_sql($query, $params);
 
@@ -2185,6 +2193,14 @@ function feedback_get_group_values($item,
         } else {
             $select = "item = :itemid ".$ignore_empty_select;
             $params += array('itemid' => $item->id);
+            // START BSL TWEAK - Provide additional analysis parameters
+            // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+            if (!empty($filteringdata)) {
+                $select .= ' AND fbc.timemodified BETWEEN :from AND :till';
+                $params += ['from' => $filteringdata->from, 'till' => $filteringdata->till];
+            }
+            // END BSL TWEAK.
+
             $values = $DB->get_records_select('feedback_value', $select, $params);
         }
     }

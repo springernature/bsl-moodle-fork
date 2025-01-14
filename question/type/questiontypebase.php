@@ -1137,7 +1137,10 @@ class question_type {
      * @param object $answer the DB row from the question_answers table plus extra answer fields.
      * @return question_answer
      */
-    protected function make_answer($answer) {
+    // START BSL TWEAK - Make method public to allow being called from plugins
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function make_answer($answer) {
+        // END BSL TWEAK.
         return new question_answer($answer->id, $answer->answer,
                     $answer->fraction, $answer->feedback, $answer->feedbackformat);
     }

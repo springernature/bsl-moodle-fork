@@ -51,7 +51,11 @@ $PAGE->set_url($url);
 // Checking login +logging +getting context.
 require_login($course, false, $cm);
 $contextmodule = context_module::instance($cm->id);
-require_capability('mod/scorm:viewreport', $contextmodule);
+// START BSL TWEAK - Handle Dshop manager capability
+// Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+$context = context_course::instance(1, MUST_EXIST);
+require_capability('block/dshop:manager', $context);
+// END BSL TWEAK.
 
 // Check user has group access.
 if (!groups_user_groups_visible($course, $userid, $cm)) {

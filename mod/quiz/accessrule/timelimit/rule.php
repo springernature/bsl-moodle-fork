@@ -45,11 +45,25 @@ class quizaccess_timelimit extends access_rule_base {
     }
 
     public function end_time($attempt) {
-        $timedue = $attempt->timestart + $this->quiz->timelimit;
-        if ($this->quiz->timeclose) {
-            $timedue = min($timedue, $this->quiz->timeclose);
+        // START BSL TWEAK - Modify attempt end times for quiz support
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        global $DB, $USER;
+        $sql = 'SELECT * FROM {dshop_exam_students}
+                WHERE user_id = :userid AND available_until BETWEEN :start AND :end';
+        $extratime = 0;
+        $start = time() - (60 * 30);
+        $end = strtotime('+3 hours') + (60 * 15);
+        $record = $DB->get_record_sql($sql, [
+            'userid' => $USER->id,
+            'start' => $start,
+            'end' => $end,
+        ], IGNORE_MULTIPLE);
+        if (!empty($record->extra_time)) {
+            $timelimit = $this->quizobj->get_quiz()->timelimit; // 100%
+            $extratime = $timelimit * 25 / 100;
         }
-        return $timedue;
+        return $attempt->timestart + $this->quiz->timelimit + $extratime;
+        // END BSL TWEAK.
     }
 
     public function time_left_display($attempt, $timenow) {

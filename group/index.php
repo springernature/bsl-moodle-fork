@@ -63,6 +63,16 @@ require_capability('moodle/course:managegroups', $context);
 $PAGE->requires->js('/group/clientlib.js', true);
 $PAGE->requires->js('/group/module.js', true);
 
+// START BSL TWEAK - Handle additional user types
+// Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+$isadmin = has_capability('block/dshop:admin', context_system::instance(), $USER);
+$students = [];
+if (!$isadmin) {
+    $duser = Dshop_User::getInstance();
+    $students = $duser->getMyStudents();
+}
+// END BSL TWEAK.
+
 // Check for multiple/no group errors.
 if (!$singlegroup) {
     switch($action) {
@@ -98,6 +108,12 @@ switch ($action) {
                 $shortroledata->name = html_entity_decode($roledata->name, ENT_QUOTES, 'UTF-8');
                 $shortroledata->users = array();
                 foreach ($roledata->users as $member) {
+                    // START BSL TWEAK - Handle additional user types
+                    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+                    if (!isset($students[$member->id]) && !$isadmin) {
+                        continue;
+                    }
+                    // END BSL TWEAK.
                     $shortmember = new stdClass();
                     $shortmember->id = $member->id;
                     $shortmember->name = fullname($member, $viewfullnames);

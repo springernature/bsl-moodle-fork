@@ -133,11 +133,15 @@ abstract class feedback_item_base {
      * @param object $item the db-object from feedback_item
      * @param integer $groupid
      * @param integer $courseid
+     * @param object $formdata
      * @return integer the new row_offset
      */
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
     abstract public function excelprint_item(&$worksheet, $row_offset,
                                       $xls_formats, $item,
-                                      $groupid, $courseid = false);
+                                      $groupid, $courseid = false, object $formdata);
+    // END BSL TWEAK.
 
     /**
      * Prints analysis for the current item
@@ -146,9 +150,13 @@ abstract class feedback_item_base {
      * @param string $itemnr
      * @param integer $groupid
      * @param integer $courseid
+     * @param $filteringdata
      * @return integer the new itemnr
      */
-    abstract public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false);
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    abstract public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false, $filteringdata = false);
+    // END BSL TWEAK.
 
     /**
      * Prepares the value for exporting to Excel
@@ -316,12 +324,14 @@ class feedback_item_pagebreak extends feedback_item_base {
     public function get_hasvalue() {
         return 0;
     }
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
     public function excelprint_item(&$worksheet, $row_offset,
                             $xls_formats, $item,
-                            $groupid, $courseid = false) {
+                            $groupid, $courseid = false, object $formdata) {
     }
-
-    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+    // END BSL TWEAK.
+    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false, $filteringdata = false) {
     }
     public function get_printval($item, $value) {
     }
