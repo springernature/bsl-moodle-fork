@@ -6613,10 +6613,8 @@ class assign {
         require_once($CFG->dirroot . '/blocks/dshop/class/Helper.php');
         $customer = Dshop_Helper::getMyCustomer($userfrom->id, $coursemodule->course);
         if ($customer) {
-            if (self::save_send_message($coursemodule->id, $userfrom, $userto)) {
-                $customer->mail_preference = Dshop_Userhelper::getEmailPreference($customer->id, 'assign');
-                \block_dshop\helper::email_to_user($customer, $userfrom, $postsubject, $posttext, $posthtml);
-            }
+            $customer->mail_preference = Dshop_Userhelper::getEmailPreference($customer->id, 'assign');
+            \block_dshop\helper::email_to_user($customer, $userfrom, $postsubject, $posttext, $posthtml);
         }
         // END BSL TWEAK.
     }
