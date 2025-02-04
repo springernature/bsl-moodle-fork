@@ -473,7 +473,10 @@ function scorm_insert_track($userid, $scormid, $scoid, $attemptornumber, $elemen
             if (!empty($tracktest)) {
                 if ($tracktest->value == "incomplete") {
                     $v = new stdClass();
-                    $v->id = $track->valueid;
+                    // START BSL TWEAK - Fix the typo $track -> $tracktest variable.
+                    // Copyright (C) 2025 Springer Media B.V. - All Rights Reserved.
+                    $v->id = $tracktest->valueid;
+                    // END BSL TWEAK.
                     $v->value = "completed";
                     $DB->update_record('scorm_scoes_value', $v);
                 }
