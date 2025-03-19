@@ -1,3 +1,7 @@
+> [!WARNING]
+> Do not remove this repository even though it's only updated and synched rather infrequently by [BSL](https://bsl.nl) partner [LDesign Media](https://ldesignmedia.nl/en) (i.e. normally only ahead of a major Moodle upgrade).
+> 
+
 # Moodle
 
 <p align="center"><a href="https://moodle.org" target="_blank" title="Moodle Website">
