@@ -64,6 +64,11 @@ echo $OUTPUT->heading(get_string('analysis', 'mod_feedback'), 3);
 $mygroupid = groups_get_activity_group($cm, true);
 groups_print_activity_menu($cm, $url);
 
+// START BSL TWEAK - Fix for filtering analysis
+// Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+$filtering = new \mod_feedback\form\filter_analysis($PAGE->url);
+echo '<hr>' . $filtering->render();
+// END BSL TWEAK.
 // Button "Export to excel".
 if (has_capability('mod/feedback:viewreports', $context) && $feedbackstructure->get_items()) {
     echo $OUTPUT->container_start('form-buttons');
@@ -93,7 +98,10 @@ if ($check_anonymously) {
     foreach ($items as $item) {
         $itemobj = feedback_get_item_class($item->typ);
         $printnr = ($feedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
-        $itemobj->print_analysed($item, $printnr, $mygroupid);
+        // START BSL TWEAK - Include additional parameters for analysis
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        $itemobj->print_analysed($item, $printnr, $mygroupid, false, $filtering->get_data());
+        // END BSL TWEAK.
     }
 } else {
     echo $OUTPUT->heading_with_help(get_string('insufficient_responses_for_this_group', 'feedback'),

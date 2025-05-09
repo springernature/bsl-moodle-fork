@@ -56,9 +56,22 @@ class quizaccess_password extends access_rule_base {
         $mform->addElement('passwordunmask', 'quizpassword',
                 get_string('quizpassword', 'quizaccess_password'), ['autofocus' => 'true']);
     }
+    // START BSL TWEAK - Handle MBO structures
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function get_mbo_exam_passwords(): array {
+        global $DB;
+        $sql = 'SELECT id, code
+                FROM {dshop_exam_slot} WHERE available_until >= :time';
+        return (array) $DB->get_records_sql_menu($sql , ['time' => time()]);
+    }
+    // END BSL TWEAK.
 
     public function validate_preflight_check($data, $files, $errors, $attemptid) {
 
+        // START BSL TWEAK - Handle MBO structures
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        $this->quiz->extrapasswords = $this->get_mbo_exam_passwords();
+        // END BSL TWEAK.
         $enteredpassword = $data['quizpassword'];
         if (strcmp($this->quiz->password, $enteredpassword) === 0) {
             return $errors; // Password is OK.

@@ -1489,7 +1489,10 @@ class assign {
         }
 
         $eventtype = ASSIGN_EVENT_TYPE_GRADINGDUE;
-        if ($instance->gradingduedate) {
+        // START BSL TWEAK - Fix for additional user types.
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        if (!empty($instance->gradingduedate)) {
+        // END BSL TWEAK.
             $event->name = get_string('calendargradingdue', 'assign', $instance->name);
             $event->eventtype = $eventtype;
             $event->timestart = $instance->gradingduedate;
@@ -6601,23 +6604,22 @@ class assign {
         $eventdata->notification    = 1;
         $eventdata->contexturl      = $info->url;
         $eventdata->contexturlname  = $info->assignment;
-        $customdata = [
-            'cmid' => $coursemodule->id,
-            'instance' => $coursemodule->instance,
-            'messagetype' => $messagetype,
-            'blindmarking' => $blindmarking,
-            'uniqueidforuser' => $uniqueidforuser,
-        ];
-        // Check if the userfrom is real and visible.
-        if (!empty($userfrom->id) && core_user::is_real_user($userfrom->id)) {
-            $userpicture = new user_picture($userfrom);
-            $userpicture->size = 1; // Use f1 size.
-            $userpicture->includetoken = $userto->id; // Generate an out-of-session token for the user receiving the message.
-            $customdata['notificationiconurl'] = $userpicture->get_url($PAGE)->out(false);
+        // START BSL TWEAK - Dshop email handling.
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        if (has_capability("mod/assign:receivegradernotifications", $context, $userto)) {
+            // Check if user want to get notifications.
+            $userto->mail_preference = Dshop_Userhelper::getEmailPreference($userto->id, 'assign');
+            \block_dshop\helper::email_to_user($userto, $userfrom, $postsubject, $posttext, $posthtml);
+            return;
         }
-        $eventdata->customdata = $customdata;
 
-        message_send($eventdata);
+        require_once($CFG->dirroot . '/blocks/dshop/class/Helper.php');
+        $customer = Dshop_Helper::getMyCustomer($userfrom->id, $coursemodule->course);
+        if ($customer) {
+            $customer->mail_preference = Dshop_Userhelper::getEmailPreference($customer->id, 'assign');
+            \block_dshop\helper::email_to_user($customer, $userfrom, $postsubject, $posttext, $posthtml);
+        }
+        // END BSL TWEAK.
     }
 
     /**

@@ -51,8 +51,15 @@ class summary implements renderable, templatable {
      *
      * @param mod_feedback_structure $feedbackstructure
      * @param int $mygroupid currently selected group
+     * @param $extradetails
+     * @param $completedcount
      */
-    public function __construct($feedbackstructure, $mygroupid = false) {
+    // START BSL TWEAK - Handle additional details parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function __construct($feedbackstructure, $mygroupid = false, $extradetails = false, $completedcount = false) {
+        $this->extradetails = $extradetails;
+        $this->completedcount = $completedcount;
+        // END BSL TWEAK.
         $this->feedbackstructure = $feedbackstructure;
         $this->mygroupid = $mygroupid;
     }
@@ -67,6 +74,18 @@ class summary implements renderable, templatable {
         $r = new stdClass();
         $r->completedcount = $this->feedbackstructure->count_completed_responses($this->mygroupid);
         $r->itemscount = count($this->feedbackstructure->get_items(true));
+        // START BSL TWEAK - Handle additional details parameters
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        if (is_numeric($this->completedcount)) {
+            $r->completedcount = $this->completedcount;
+        }
+        if ($this->extradetails && ($timeopen = $this->feedbackstructure->get_feedback()->timeopen)) {
+            $r->timeopen = userdate($timeopen);
+        }
+        if ($this->extradetails && ($timeclose = $this->feedbackstructure->get_feedback()->timeclose)) {
+            $r->timeclose = userdate($timeclose);
+        }
+        // END BSL TWEAK.
 
         return $r;
     }

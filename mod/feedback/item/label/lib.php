@@ -231,16 +231,19 @@ class feedback_item_label extends feedback_item_base {
         return false;
     }
 
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
     public function excelprint_item(&$worksheet,
                              $row_offset,
                              $xls_formats,
                              $item,
                              $groupid,
-                             $courseid = false) {
+                             $courseid = false, object $formdata) {
     }
 
-    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false, $filteringdata = false) {
     }
+    // END BSL TWEAK.
     public function get_printval($item, $value) {
     }
 

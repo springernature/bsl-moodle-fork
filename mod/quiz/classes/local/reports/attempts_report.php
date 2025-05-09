@@ -212,6 +212,13 @@ abstract class attempts_report extends report_base {
             $headers[] = get_string('lastname');
             $columns[] = 'firstname';
             $headers[] = get_string('firstname');
+
+            // TWEAK START LTNC.
+            $columns[] = 'email';
+            $headers[] = get_string('email');
+            $columns[] = 'site_id';
+            $headers[] = 'Lic. houder';
+            // TWEAK END LTNC.
         }
 
         $extrafields = \core_user\fields::get_identity_fields($this->context);

@@ -102,15 +102,23 @@ class feedback_item_numeric extends feedback_item_base {
      * @param stdClass $item the db-object from feedback_item
      * @param int $groupid
      * @param int $courseid
+     * @param $filteringdata
+     *
      * @return stdClass
      */
-    protected function get_analysed($item, $groupid = false, $courseid = false) {
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    protected function get_analysed($item, $groupid = false, $courseid = false, $filteringdata = false) {
+        // END BSL TWEAK.
         global $DB;
 
         $analysed = new stdClass();
         $analysed->data = array();
         $analysed->name = $item->name;
-        $values = feedback_get_group_values($item, $groupid, $courseid);
+        // START BSL TWEAK - Handle additional analysis parameters
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        $values = feedback_get_group_values($item, $groupid, $courseid, $filteringdata);
+        // END BSL TWEAK.
 
         $avg = 0.0;
         $counter = 0;
@@ -138,9 +146,12 @@ class feedback_item_numeric extends feedback_item_base {
         return $value->value;
     }
 
-    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false, $filteringdata = false) {
 
-        $values = $this->get_analysed($item, $groupid, $courseid);
+        $values = $this->get_analysed($item, $groupid, $courseid, $filteringdata);
+        // END BSL TWEAK.
 
         if (isset($values->data) AND is_array($values->data)) {
             echo "<table class=\"analysis itemtype_{$item->typ}\">";
@@ -170,11 +181,14 @@ class feedback_item_numeric extends feedback_item_base {
         }
     }
 
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
     public function excelprint_item(&$worksheet, $row_offset,
                              $xls_formats, $item,
-                             $groupid, $courseid = false) {
+                             $groupid, $courseid = false, object $formdata) {
 
-        $analysed_item = $this->get_analysed($item, $groupid, $courseid);
+        $analysed_item = $this->get_analysed($item, $groupid, $courseid, $formdata);
+        // END BSL TWEAK.
 
         $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
         $worksheet->write_string($row_offset, 1, $item->name, $xls_formats->head2);

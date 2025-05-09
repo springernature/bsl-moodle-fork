@@ -533,12 +533,15 @@ abstract class attempts_report_table extends \table_sql {
                 ->excluding('id', 'idnumber', 'picture', 'imagealt', 'institution', 'department', 'email');
         $userfields = $userfieldsapi->get_sql('u', true, '', '', false);
 
+        // START BSL TWEAK - Add site_id support
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
         $fields .= '
                 quiza.uniqueid AS usageid,
                 quiza.id AS attempt,
                 u.id AS userid,
                 u.idnumber,
                 u.picture,
+                u.site_id,
                 u.imagealt,
                 u.institution,
                 u.department,
@@ -550,6 +553,7 @@ abstract class attempts_report_table extends \table_sql {
                 CASE WHEN quiza.timefinish = 0 THEN null
                      WHEN quiza.timefinish > quiza.timestart THEN quiza.timefinish - quiza.timestart
                      ELSE 0 END AS duration';
+        // END BSL TWEAK.
             // To explain that last bit, timefinish can be non-zero and less
             // than timestart when you have two load-balanced servers with very
             // badly synchronised clocks, and a student does a really quick attempt.
