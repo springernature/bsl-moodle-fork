@@ -6555,6 +6555,10 @@ class assign {
                                                         $blindmarking,
                                                         $uniqueidforuser) {
         global $CFG, $PAGE;
+        // START BSL TWEAK - Dshop email handling.
+        // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+        require_once $CFG->dirroot . '/blocks/dshop/class/Userhelper.php';
+        // END BSL TWEAK.
 
         $info = new stdClass();
         if ($blindmarking) {
