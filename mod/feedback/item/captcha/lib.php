@@ -88,13 +88,17 @@ class feedback_item_captcha extends feedback_item_base {
         return '';
     }
 
-    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false, $filteringdata = false) {
+    // END BSL TWEAK.
         return $itemnr;
     }
 
-    public function excelprint_item(&$worksheet, $row_offset,
-                             $xls_formats, $item,
-                             $groupid, $courseid = false) {
+    // START BSL TWEAK - Handle additional analysis parameters
+    // Copyright (C) 2024 Springer Media B.V. - All Rights Reserved.
+    public function excelprint_item(&$worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid = false, object $formdata) {
+    // END BSL TWEAK.
         return $row_offset;
     }
 
